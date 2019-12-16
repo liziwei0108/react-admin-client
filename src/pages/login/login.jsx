@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import { Form, Icon, Input, Button, message } from 'antd';
+import { Redirect } from 'react-router-dom';
 
 import './login.less';
-import logo from './images/logo.png';
+import logo from '../../assets/images/logo.png';
 import { reqLogin } from '../../api';
 import MemoryUtils from '../../utils/memoryUtils'
+import StorageUtils from '../../utils/storageUtils'
 
 
 
@@ -30,6 +32,9 @@ class Login extends Component {
           //将user保存在内存中
           const user = result.data;
           MemoryUtils.user = user;
+
+          //将user保存在localStorage中
+          StorageUtils.saveUser(user);
 
 
           this.props.history.replace('/');
@@ -73,6 +78,12 @@ class Login extends Component {
   }
 
   render() {
+
+    const user = MemoryUtils.user;
+    if(user._id){
+      return <Redirect to='/' />
+    }
+
     const form = this.props.form;
     const { getFieldDecorator } = form;
 
