@@ -22,9 +22,10 @@ class Login extends Component {
       if (!err) {
         const { username, password } = values;
 
-        const response = await reqLogin(username, password);
+        const result = await reqLogin(username, password);
         //console.log('请求成功！', response.data)
-        const result = response.data; //{status:0,data:user} {status:1,msg:'错误信息'}
+        //const result = response.data; //{status:0,data:user} {status:1,msg:'错误信息'}
+        console.log(result)
 
 
         if (result.status === 0) {
@@ -40,6 +41,7 @@ class Login extends Component {
           this.props.history.replace('/');
 
         } else {
+          //console.log(result)
           message.error(result.msg);
         }
 

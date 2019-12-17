@@ -12,7 +12,7 @@ export const reqLogin = (username, password) => ajax(BASE + '/login', { username
 
 
 //添加用户
-export const reqAddUser = (user) => ajax(BASE + '/manage/user/add', { user }, 'POST')
+export const reqAddUser = (user) => ajax(BASE + '/manage/user/add', user, 'POST')
 
 //jsonp请求的接口请求函数
 export const reqWeather = (city) => {
@@ -37,3 +37,12 @@ export const reqWeather = (city) => {
 
 
 }
+
+//获取分类列表
+export const reqCategorys = (parentId) => ajax(BASE + '/manage/category/list', { parentId })
+
+//添加分类
+export const reqAddCategory = (categoryName, parentId) => ajax(BASE + '/manage/category/add', { categoryName, parentId }, 'POST')
+
+//更改分类
+export const reqUpdateCategory = (categoryId, categoryName) => ajax(BASE + '/manage/category/update', { categoryId, categoryName }, 'POST')

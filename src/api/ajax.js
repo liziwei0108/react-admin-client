@@ -23,7 +23,7 @@ export default function ajax(url,data={},type='GET'){
 
     //如果成功的话就调用resolve(value)
     promise.then(response => {
-      resolve(response)
+      resolve(response.data)
     }).catch(error => {
       //如果失败的话，不调用reject，而是alert提示错误
       message.error('请求出错：'+error.message)
