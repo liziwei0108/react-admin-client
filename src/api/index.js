@@ -14,6 +14,12 @@ export const reqLogin = (username, password) => ajax(BASE + '/login', { username
 //添加用户
 export const reqAddUser = (user) => ajax(BASE + '/manage/user/add', user, 'POST')
 
+//获取所有角色列表
+export const reqRoles = () => ajax(BASE + '/manage/role/list','GET')
+
+//获取所有角色列表
+export const reqAddRole = (roleName) => ajax(BASE + '/manage/role/add', {roleName},'POST')
+
 //jsonp请求的接口请求函数
 export const reqWeather = (city) => {
 

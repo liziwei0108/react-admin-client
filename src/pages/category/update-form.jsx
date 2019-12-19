@@ -9,6 +9,11 @@ class UpdateForm extends Component {
   //   categoryName: PropTypes.string.isRequired
   // };
 
+  constructor(props){
+    super(props);
+    this.props.setForm(this.props.form);
+  }
+
   render() {
     const { categoryName } = this.props;
     const { getFieldDecorator } = this.props.form;

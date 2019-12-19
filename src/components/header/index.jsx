@@ -52,7 +52,7 @@ class Header extends Component {
         title = item.title
       }else if(item.children){
         //在所有子item中查找，如果当前子item的key与当前路由匹配，则说明当前子item的title就是要找的title
-        const cItem = item.children.find(cItem => cItem.key===path)
+        const cItem = item.children.find(cItem => path.indexOf(cItem.key)===0)
         if(cItem){
           title = cItem.title
         }

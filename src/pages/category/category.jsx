@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Card, Table, Button, Icon, message, Modal } from 'antd'
 import LinkButton from '../../components/link-button'
-import { reqCategorys } from '../../api'
+import { reqCategorys, reqUpdateCategory, reqAddCategory } from '../../api'
 import AddForm from './add-form'
 import UpdateForm from './update-form'
 
@@ -124,12 +124,38 @@ export default class Category extends Component {
   }
 
   //更新分类
-  updateCategory = () => {
+  updateCategory = async () => {
     console.log('updateCategory')
+    //隐藏确认框
+    this.setState({
+      showStatus: 0,
+    })
+
+    const categoryId = this.category._id;
+    const categoryName = this.form.getFieldValue('categoryName');
+
+    //重置表单中的所有数据
+    this.form.resetFields();
+
+    //发请求更新分类
+    const result = await reqUpdateCategory(categoryId, categoryName);
+    if(result.status===0){
+      //请求成功
+      //重新显示列表
+    this.getCategorys('0');
+    }else{
+
+    }
+
+    
   }
 
   //取消弹窗
   handleCancel = () => {
+
+    //清除数据
+    this.form.resetFields();
+    //隐藏确认框
     this.setState({
       showStatus: 0,
     })
@@ -184,10 +210,9 @@ export default class Category extends Component {
           onOk={this.updateCategory}
           onCancel={this.handleCancel}
         >
-          <UpdateForm categoryName={category.name}/>   
+          <UpdateForm categoryName={category.name} setForm={(form)=>{this.form=form}}/>   
         </Modal>
       </Card>
     )
-    //记得在添加完分类之后把UpdateForm的categoryName改成category.name
   }
 }
