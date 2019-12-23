@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Card, Table, Button, message, Modal } from 'antd';
-import { reqRoles, reqAddRole } from '../../api'
+import { reqRoles, reqAddRole, reqUpdateRole } from '../../api'
+import MemoryUtils from '../../utils/memoryUtils'
+import {formateDate} from '../../utils/dateUtils'
 import AddForm from './add-form'
 import AuthForm from './auth-form'
 
@@ -30,10 +32,13 @@ export default class Role extends Component {
       {
         title: '创建时间',
         dataIndex: 'create_time',
+        render: (create_time) => formateDate(create_time)
+
       },
       {
         title: '授权时间',
         dataIndex: 'auth_time',
+        render: (auth_time) => formateDate(auth_time)
       },
       {
         title: '授权人',
@@ -41,6 +46,9 @@ export default class Role extends Component {
       },
 
     ]
+
+    //创建存放authForm实例对象的容器
+    this.auth = React.createRef();
   }
 
   //展示添加角色modal
@@ -98,8 +106,30 @@ export default class Role extends Component {
   }
   
   //更新角色（为角色设置权限）
-  update = () => {
+  updateRole = async() => {
+    this.setState({
+      isShowAuth: false
+    })
+
     const { role } = this.state;
+    //current得到组件的实例对象，并调用该对象中的函数来获取更新后的menus数据
+    const menus = this.auth.current.getMenus()
+    role.menus = menus;
+    role.auth_time = Date.now()
+    role.auth_name = MemoryUtils.user.username;
+
+    //请求更新
+    const response = await reqUpdateRole(role);
+    if(response.status===0){
+      message.success('权限设置成功！')
+      //更新角色列表
+      this.setState({
+        roles: [...this.state.roles]
+      })
+      
+    }else{
+      message.error('权限设置失败！')
+    }
   }
 
   //隐藏添加角色modal
@@ -186,7 +216,7 @@ export default class Role extends Component {
           onOk={this.updateRole}
           onCancel={this.handleCancelUpdate}
         >
-          <AuthForm role={role}/>
+          <AuthForm role={role} ref={this.auth}/>
         </Modal>
 
       </Card>
