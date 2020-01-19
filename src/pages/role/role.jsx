@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Card, Table, Button, message, Modal } from 'antd';
 import { reqRoles, reqAddRole, reqUpdateRole } from '../../api'
 import MemoryUtils from '../../utils/memoryUtils'
+import StorageUtils from '../../utils/storageUtils'
 import {formateDate} from '../../utils/dateUtils'
 import AddForm from './add-form'
 import AuthForm from './auth-form'
@@ -122,10 +123,23 @@ export default class Role extends Component {
     const response = await reqUpdateRole(role);
     if(response.status===0){
       message.success('权限设置成功！')
-      //更新角色列表
-      this.setState({
+      
+
+      //如果更新的是当前用户对应角色的权限，则强制退出
+      if(role._id === MemoryUtils.user.role_id){
+
+        MemoryUtils.user = {}
+        StorageUtils.removeUser()
+        this.props.history.replace('/login')
+        message.success('当前用户角色权限有更改，请重新登录！')
+
+      }else{
+        message.success('权限设置成功！')
+        //更新角色列表
+        this.setState({
         roles: [...this.state.roles]
       })
+      }
       
     }else{
       message.error('权限设置失败！')
@@ -197,7 +211,15 @@ export default class Role extends Component {
           dataSource={roles}
           columns={this.columns}
           onRow={this.onRow}
-          rowSelection={{ type: 'radio', selectedRowKeys: [role._id] }}
+          rowSelection={{ 
+            type: 'radio', 
+            selectedRowKeys: [role._id],
+            onSelect: (role) => {
+              //选择某个radio时回调
+              this.setState({role})
+
+            }
+          }}
           pagination={{ defaultPageSize: 5 }}
         />
 

@@ -2,6 +2,7 @@ const menuList = [{
   title: '首页', //菜 单 标 题 名 称
   key: '/home', //对 应 的 path
   icon: 'home', //图 标 名 称
+  isPublic: true //公开页面 所有用户都可以看
 },
 {
   title: '商品',
