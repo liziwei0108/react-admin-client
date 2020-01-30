@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import MemoryUtils from '../../utils/memoryUtils'
 import { Redirect, Route, Switch } from 'react-router-dom'
 
 import Header from '../../components/header';
 import LeftNav from '../../components/left-nav';
 import { Layout } from 'antd';
+import {connect} from 'react-redux';
 
 import Home from '../home/home';
 import Category from '../category/category';
@@ -17,9 +17,9 @@ import Pie from '../charts/pie';
 
 const { Sider, Footer, Content } = Layout;
 
-export default class Admin extends Component{
+class Admin extends Component{
   render(){
-    const user = MemoryUtils.user;
+    const user = this.props.user;
     //如果内存中没有存储user，说明当前没有登录
     if(!user||!user._id){
       //自动跳转到登录
@@ -51,3 +51,10 @@ export default class Admin extends Component{
     )
   }
 }
+
+export default connect(
+  state => ({
+    user: state.user
+  }),
+  {}
+)(Admin)

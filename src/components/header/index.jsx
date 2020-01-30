@@ -12,6 +12,8 @@ import { withRouter } from 'react-router-dom';
 import menuList from '../../config/menuConfig';
 import LinkButton from '../link-button'
 import { Modal } from 'antd';
+import { connect } from 'react-redux'
+import { logout } from '../../redux/actions'
 
 class Header extends Component {
 
@@ -71,11 +73,12 @@ class Header extends Component {
         okText: '确认',
         cancelText: '取消',
         onOk: () => {
-          //删除用户数据
-          storageUtils.removeUser();
-          memoryUtils.user = {};
-          //跳转到登录页面
-          this.props.history.replace('/login');
+          // //删除用户数据
+          // storageUtils.removeUser();
+          // memoryUtils.user = {};
+          // //跳转到登录页面
+          // this.props.history.replace('/login');
+          this.props.logout()
         },
         onCancel() {
           console.log('取消');
@@ -101,8 +104,9 @@ class Header extends Component {
   render(){
 
     const { currentTime, dayPictureUrl, weather } = this.state;
-    const username = memoryUtils.user.username;
-    const title = this.getTitle();
+    const username = this.props.user.username;
+    //const title = this.getTitle();
+    const title = this.props.headTitle
 
     return(
       <div className="header">
@@ -123,4 +127,7 @@ class Header extends Component {
   }
 };
 
-export default withRouter(Header)
+export default connect(
+  state => ({headTitle: state.headTitle, user: state.user}),
+  {logout}
+)(withRouter(Header))
