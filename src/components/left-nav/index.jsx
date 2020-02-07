@@ -175,7 +175,7 @@ class LeftNav extends Component {
 };
 
 /**
- * 用withRouter高阶组件包装非组件，向他传递路由组件的3个特定属性
+ * 用withRouter高阶组件包装非路由组件，向他传递路由组件的3个特定属性:history location match
  */
 export default connect(
   state => ({user: state.user}),
