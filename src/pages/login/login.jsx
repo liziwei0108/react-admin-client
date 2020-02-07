@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Form, Icon, Input, Button, message } from 'antd';
 import { Redirect } from 'react-router-dom';
+import {connect} from 'react-redux';
 
 import './login.less';
 import logo from '../../assets/images/logo.png';
-import { reqLogin } from '../../api';
-import MemoryUtils from '../../utils/memoryUtils'
-import StorageUtils from '../../utils/storageUtils'
+import {login} from '../../redux/actions'
 
 
 
@@ -22,29 +21,8 @@ class Login extends Component {
       if (!err) {
         const { username, password } = values;
 
-        const result = await reqLogin(username, password);
-        //console.log('请求成功！', response.data)
-        //const result = response.data; //{status:0,data:user} {status:1,msg:'错误信息'}
-        console.log(result)
-
-
-        if (result.status === 0) {
-          message.success('登录成功！');
-          //将user保存在内存中
-          const user = result.data;
-          MemoryUtils.user = user;
-
-          //将user保存在localStorage中
-          StorageUtils.saveUser(user);
-
-
-          this.props.history.replace('/');
-
-        } else {
-          //console.log(result)
-          message.error(result.msg);
-        }
-
+        //调用分发异步action的函数 =>有结果后更新redux中的user
+        this.props.login(username, password)
 
       } else {
         console.log('校验失败！');
@@ -81,9 +59,11 @@ class Login extends Component {
 
   render() {
 
-    const user = MemoryUtils.user;
+    const user = this.props.user;
     if(user._id){
-      return <Redirect to='/' />
+      return <Redirect to='/home' />
+    }else{
+      message.error(this.props.user.msg)
     }
 
     const form = this.props.form;
@@ -145,4 +125,9 @@ class Login extends Component {
 }
 
 const WrapLogin = Form.create()(Login)
-export default WrapLogin
+export default connect(
+  state => ({
+    user:state.user
+  }),
+  {login}
+)(WrapLogin)
